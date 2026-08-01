@@ -102,9 +102,17 @@ async function sendButtonTemplate(senderId, payload, token, formUrl) {
 }
 
 async function callSendAPI(message, token) {
-  await fetch(`https://graph.facebook.com/v20.0/me/messages?access_token=${token}`, {
+  const response = await fetch(`https://graph.facebook.com/v20.0/me/messages?access_token=${token}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(message),
   });
+  const result = await response.json();
+
+  if (!response.ok || result.error) {
+    // In lỗi thật sự ra Vercel Logs để dễ debug
+    console.error('Facebook Send API error:', JSON.stringify(result, null, 2));
+  } else {
+    console.log('Facebook Send API success:', JSON.stringify(result));
+  }
 }

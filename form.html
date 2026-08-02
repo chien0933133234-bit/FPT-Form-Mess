@@ -223,8 +223,7 @@
 <div class="card">
   <span class="badge">🔥 ƯU ĐÃI THÁNG 8</span>
   <h1>Để Lại<span class="accent"> Thông Tin Tư Vấn</span> Ngay</h1>
-  <p class="subtitle">Điền thông tin bên dưới – nhân viên sẽ liên hệ ngay. Lắp đặt trong ngày!</p>
-  <p id="serviceLabel">Dịch vụ quan tâm: —</p>
+  <p id="serviceLabel">Giá cước áp dụng theo khu vực</p>
 
   <form id="leadForm">
     <div class="row">
@@ -286,7 +285,7 @@
       </div>
     </div>
     <div id="errorMsg">Vui lòng kiểm tra lại thông tin.</div>
-    <button type="submit" id="submitBtn">Gửi thông tin ngay</button>
+    <button type="submit" id="submitBtn">Xem giá khuyến mãi</button>
   </form>
 
   <div id="successMsg" style="display:none">
@@ -299,7 +298,7 @@
       </div>
     </div>
     <p>Đã gửi thành công!</p>
-    <span>Nhân viên sẽ liên hệ anh/chị trong vòng 30 phút.</span>
+    <span>Nhân viên sẽ liên hệ anh/chị ngay.</span>
   </div>
 </div>
 
@@ -307,7 +306,7 @@
 <script>
   const params = new URLSearchParams(window.location.search);
   const service = params.get('service') || '';
-  document.getElementById('serviceLabel').textContent = 'Dịch vụ quan tâm: ' + (service || 'Chưa xác định');
+  document.getElementById('serviceLabel').textContent = 'Giá cước áp dụng theo khu vực';
 
   // Nếu Messenger truyền sẵn dịch vụ, tự chọn trong dropdown gói cước
   if (service) {

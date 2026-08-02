@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
   const FORM_URL = process.env.FORM_URL; // vd: https://ten-project.vercel.app/form.html
+  const BASE_URL = FORM_URL ? FORM_URL.replace(/\/form\.html$/, '') : '';
 
   // Bước xác minh webhook khi khai báo trong Meta App
   if (req.method === 'GET') {
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
         if (payload) {
           await sendButtonTemplate(senderId, payload, PAGE_ACCESS_TOKEN, FORM_URL);
         } else if (event.message?.text) {
-          await sendMenu(senderId, PAGE_ACCESS_TOKEN);
+          await sendMenu(senderId, PAGE_ACCESS_TOKEN, BASE_URL);
         }
       }
       return res.status(200).send('EVENT_RECEIVED');
@@ -48,18 +49,58 @@ export default async function handler(req, res) {
   return res.status(405).send('Method Not Allowed');
 }
 
-// Menu ban đầu gửi cho khách (quick replies)
-async function sendMenu(senderId, token) {
+// Menu ban đầu gửi cho khách (dạng thẻ card có hình ảnh)
+async function sendMenu(senderId, token, baseUrl) {
+  const greeting = {
+    recipient: { id: senderId },
+    message: { text: 'Chào anh/chị! Anh/chị quan tâm dịch vụ nào của FPT ạ? 👇' },
+  };
+  await callSendAPI(greeting, token);
+
   const message = {
     recipient: { id: senderId },
     message: {
-      text: 'Chào anh/chị! Anh/chị quan tâm dịch vụ nào ạ?',
-      quick_replies: [
-        { content_type: 'text', title: 'Internet', payload: 'INTERNET' },
-        { content_type: 'text', title: 'Camera an ninh', payload: 'CAMERA' },
-        { content_type: 'text', title: 'Truyền hình FPT', payload: 'TRUYENHINH' },
-        { content_type: 'text', title: 'Tư vấn trực tiếp', payload: 'TUVAN' },
-      ],
+      attachment: {
+        type: 'template',
+        payload: {
+          template_type: 'generic',
+          image_aspect_ratio: 'horizontal',
+          elements: [
+            {
+              title: 'Internet FPT',
+              subtitle: 'Wifi tốc độ cao, lắp đặt trong ngày',
+              image_url: `${baseUrl}/images/internet.jpg`,
+              buttons: [
+                { type: 'postback', title: 'Chọn dịch vụ này', payload: 'INTERNET' },
+              ],
+            },
+            {
+              title: 'Camera an ninh',
+              subtitle: 'Giám sát từ xa qua điện thoại 24/7',
+              image_url: `${baseUrl}/images/camera.jpg`,
+              buttons: [
+                { type: 'postback', title: 'Chọn dịch vụ này', payload: 'CAMERA' },
+              ],
+            },
+            {
+              title: 'Truyền hình FPT',
+              subtitle: 'Kho phim, thể thao, giải trí đa dạng',
+              image_url: `${baseUrl}/images/truyenhinh.jpg`,
+              buttons: [
+                { type: 'postback', title: 'Chọn dịch vụ này', payload: 'TRUYENHINH' },
+              ],
+            },
+            {
+              title: 'Tư vấn trực tiếp',
+              subtitle: 'Chưa rõ nhu cầu? Để nhân viên gọi tư vấn',
+              image_url: `${baseUrl}/images/tuvan.jpg`,
+              buttons: [
+                { type: 'postback', title: 'Chọn dịch vụ này', payload: 'TUVAN' },
+              ],
+            },
+          ],
+        },
+      },
     },
   };
   await callSendAPI(message, token);

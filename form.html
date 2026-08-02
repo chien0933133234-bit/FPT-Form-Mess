@@ -336,17 +336,15 @@
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const address = document.getElementById('address').value.trim();
-    const packageWanted = document.getElementById('package').value || 'Chưa chọn';
-    const contactTime = document.getElementById('contactTime').value;
+    const packageWanted = service || 'Chưa xác định';
 
     const jsonData = {
       access_key: '3f9cb416-3b14-4ee9-b4d3-ac1d6f3deea4',
-      subject: 'Lead mới từ Messenger - ' + (service || packageWanted),
+      subject: 'Lead mới từ Messenger - ' + packageWanted,
       'Họ tên': name,
       'Số điện thoại': phone,
       'Địa chỉ lắp đặt': address,
       'Gói cước quan tâm': packageWanted,
-      'Thời gian liên hệ': contactTime,
     };
 
     try {
